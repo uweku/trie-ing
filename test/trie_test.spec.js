@@ -84,8 +84,14 @@ describe('Trie', function () {
             score: 1
         })
 
-        assert.deepEqual([4,2,1], t.prefixSearch("a", {limit: 3, unique: true}));
-        assert.deepEqual([4,3,2], t.prefixSearch("a", {limit: 3, unique: false}));
+        assert.deepEqual([4, 2, 1], t.prefixSearch("a", {
+            limit: 3,
+            unique: true
+        }));
+        assert.deepEqual([4, 3, 2], t.prefixSearch("a", {
+            limit: 3,
+            unique: false
+        }));
     });
 
 
@@ -117,7 +123,9 @@ describe('Trie', function () {
             score: 4
         });
 
-        assert.deepEqual([4], t.prefixSearch("abc", {limit: 1}));
+        assert.deepEqual([4], t.prefixSearch("abc", {
+            limit: 1
+        }));
 
     });
 
@@ -160,7 +168,9 @@ describe('Trie', function () {
             score: 1
         });
 
-        assert.deepEqual([1,1,1], t.prefixSearch("a", {unique: true}));
+        assert.deepEqual([1, 1, 1], t.prefixSearch("a", {
+            unique: true
+        }));
 
     });
 
@@ -181,7 +191,9 @@ describe('Trie', function () {
             value: 2
         });
 
-        assert.deepEqual([2,1], t.prefixSearch("a", {unique: true}))
+        assert.deepEqual([2, 1], t.prefixSearch("a", {
+            unique: true
+        }))
 
     });
 
@@ -209,45 +221,70 @@ describe('Trie', function () {
             value: 1
         });
 
-        assert.deepEqual([3,1], t.prefixSearch("a", {unique: true, limit: 2}))
+        assert.deepEqual([3, 1], t.prefixSearch("a", {
+            unique: true,
+            limit: 2
+        }))
 
     });
 
 
-  it("should work on larger tries", function () {
-    this.timeout(5000)
-    var contacts = require('../benchmark/contacts.json')
+    it("should work on larger tries", function () {
+        this.timeout(5000)
+        var contacts = require('../benchmark/contacts.json')
 
-    var t = new Trie();
+        var t = new Trie();
 
-    for (var i = 0; i < contacts.length; i++) {
-      contact = contacts[i];
-      t.add({
-        key: contact.email,
-        distinct: contact.email + contact.name,
-        score: contact.score,
-        value: contact
-      })
+        for (var i = 0; i < contacts.length; i++) {
+            contact = contacts[i];
+            t.add({
+                key: contact.email,
+                distinct: contact.email + contact.name,
+                score: contact.score,
+                value: contact
+            })
 
-      t.add({
-        key: contact.name.toLowerCase(),
-        distinct: contact.email + contact.name,
-        score: contact.score,
-        value: contact
-      })
-    }
+            t.add({
+                key: contact.name.toLowerCase(),
+                distinct: contact.email + contact.name,
+                score: contact.score,
+                value: contact
+            })
+        }
 
-    results = t.prefixSearch('t', {limit: 5})
-    assert.deepEqual(['tellus.Nunc.lectus@ullamcorpereu.org', 'risus.at.fringilla@Fusce.com', 'tortor@Cras.org', 'tortor@penatibusetmagnis.com', 'tellus.Nunc.lectus@ligulaeuenim.com'], results.map((result) => result.email))
+        results = t.prefixSearch('t', {
+            limit: 5
+        })
+        assert.deepEqual(['tellus.Nunc.lectus@ullamcorpereu.org', 'risus.at.fringilla@Fusce.com', 'tortor@Cras.org', 'tortor@penatibusetmagnis.com', 'tellus.Nunc.lectus@ligulaeuenim.com'], results.map((result) => result.email))
 
-    results = t.prefixSearch('sh', {limit: 5})
-    assert.deepEqual(["ornare@acrisus.co.uk", "a.ultricies@a.com", "Etiam.bibendum@necquam.org", "orci.adipiscing.non@euligulaAenean.net", "mi.tempor.lorem@scelerisquedui.ca"], results.map((result) => result.email))
+        results = t.prefixSearch('sh', {
+            limit: 5
+        })
+        assert.deepEqual(['Shay Jimenez',
+            'Shelby Griffin',
+            'Shelley M. Cannon',
+            'Shaine Wheeler',
+            'Shea O. Stanton'
+        ], results.map((result) => result.name))
+        assert.deepEqual(["ornare@acrisus.co.uk", "a.ultricies@a.com", "Etiam.bibendum@necquam.org", "orci.adipiscing.non@euligulaAenean.net", "mi.tempor.lorem@scelerisquedui.ca"], results.map((result) => result.email))
 
-    results = t.prefixSearch('rap', {limit: 5})
-    assert.deepEqual(["velit.justo@nonegestas.net", "Fusce.aliquet.magna@esttemporbibendum.net", "auctor.velit.eget@risusDuisa.co.uk", "vehicula.Pellentesque.tincidunt@leoelementumsem.com", "arcu.vel@velitinaliquet.net"], results.map((result) => result.email))
 
-    results = t.prefixSearch('zachary ba', {limit: 5})
-    assert.deepEqual(["blandit@duiFuscediam.ca"], results.map((result) => result.email))
-  })
+        results = t.prefixSearch('rap', {
+            limit: 5
+        })
+        assert.deepEqual(['Raphael Frazier',
+            'Raphael Moses',
+            'Raphael F. Warren',
+            'Raphael Q. Morrow',
+            'Raphael P. Tate'
+        ], results.map((result) => result.name))
+        assert.deepEqual(["velit.justo@nonegestas.net", "Fusce.aliquet.magna@esttemporbibendum.net", "auctor.velit.eget@risusDuisa.co.uk", "vehicula.Pellentesque.tincidunt@leoelementumsem.com", "arcu.vel@velitinaliquet.net"], results.map((result) => result.email))
+    
+
+        results = t.prefixSearch('zachary ba', {
+            limit: 5
+        })
+        assert.deepEqual(["Zachary Bailey"], results.map((result) => result.name))
+        assert.deepEqual(["blandit@duiFuscediam.ca"], results.map((result) => result.email))
+    })
 });
-
